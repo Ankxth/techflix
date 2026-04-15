@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "express": "^5.2.1",
+    "pg": "^8.20.0",
+    "simple-git": "^3.36.0"
+  }
+}
