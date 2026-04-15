@@ -1,2 +1,5 @@
 node_modules/
 .env
+services/report/output/
+services/report/reports/
+*.pdf
