@@ -1,3 +1,4 @@
+require('dotenv').config();
 // index.js — Security Audit Service
 // Express entry point
 // POST /audit  →  runs all security scanners and returns structured results

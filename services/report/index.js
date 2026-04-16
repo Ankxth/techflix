@@ -1,3 +1,4 @@
+require('dotenv').config();
 // services/report/index.js
 // Report Service — Port 3004
 // Orchestrates Security + Integrity results, generates PDF and JSON exports.
@@ -25,8 +26,8 @@ const OUTPUT_DIR = path.join(__dirname, 'output');
 if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
 // ─── DB (pg) — commented out until Ankith provides DATABASE_URL ──────────────
-// const { Pool } = require('pg');
-// const db = new Pool({ connectionString: process.env.DATABASE_URL });
+const { Pool } = require('pg');
+const db = new Pool({ connectionString: process.env.DATABASE_URL });
 
 // ─── Helper: compute status from scores ──────────────────────────────────────
 function computeStatus(securityScore, integrityScore) {
@@ -105,18 +106,17 @@ app.post('/report/generate', async (req, res) => {
     // Build JSON
     const jsonReport = buildJSONReport(reportData);
 
-    // ── DB write (uncomment once Ankith sets DATABASE_URL) ──────────────────
-    // await db.query(
-    //   `INSERT INTO reports (evaluation_id, pdf_url, json_url, learning_path, generated_at)
-    //    VALUES ($1, $2, $3, $4, $5)`,
-    //   [
-    //     reportData.evaluationId,
-    //     `/reports/${reportData.evaluationId}/pdf`,
-    //     `/reports/${reportData.evaluationId}/json`,
-    //     JSON.stringify(learningPath),
-    //     reportData.generatedAt
-    //   ]
-    // );
+    await db.query(
+      `INSERT INTO reports (evaluation_id, pdf_url, json_url, learning_path, generated_at)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [
+        reportData.evaluationId,
+        `/reports/${reportData.evaluationId}/pdf`,
+        `/reports/${reportData.evaluationId}/json`,
+        JSON.stringify(learningPath),
+        reportData.generatedAt
+      ]
+    );
     // ────────────────────────────────────────────────────────────────────────
 
     return res.json({

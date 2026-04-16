@@ -1,3 +1,4 @@
+require('dotenv').config();
 /**
  * Integrity checking service entry point.
  * POST /integrity/check  { projectId, projectPath }
@@ -13,7 +14,7 @@ const { detectAIGenerated } = require('./aiDetection/heuristics');
 const app = express();
 app.use(express.json());
 
-//const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 app.post('/integrity/check', async (req, res) => {
   const { projectId, projectPath } = req.body;
